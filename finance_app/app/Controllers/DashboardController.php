@@ -27,6 +27,7 @@ class DashboardController
         $recentTransactions = Transaction::getRecent($userId, 10);
         $categories = Category::getAllForUser($userId);
         $people = Person::getAllForUser($userId);
+        $cashflowHistory = \App\Services\AnalyticsService::getMonthlyComparison($userId, 6);
 
         $focusMode = (bool) Session::get('focus_mode', (bool)($user['focus_mode'] ?? false));
 
@@ -38,6 +39,7 @@ class DashboardController
             'recentTransactions' => $recentTransactions,
             'categories' => $categories,
             'people' => $people,
+            'cashflowHistory' => $cashflowHistory,
             'focusMode' => $focusMode,
             'lastUsedAccountId' => Session::get('last_used_account_id', $accounts[0]['id'] ?? 0),
         ], 'app');

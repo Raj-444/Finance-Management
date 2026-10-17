@@ -20,9 +20,9 @@
   <!-- Desktop Sidebar -->
   <aside class="app-sidebar">
     <div class="sidebar-brand">
-      <div style="display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #5B5BD6, #3B3B98); color: #fff;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+      <div class="brand-monogram">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 7.5A5.5 5.5 0 0 0 7 7.5c0 5 10 4 10 9a5.5 5.5 0 0 1-10 0"/>
         </svg>
       </div>
       <span>Finance</span>
@@ -70,7 +70,7 @@
       </a>
 
       <?php if (is_admin()): ?>
-        <a href="/admin" class="nav-item" style="color: var(--color-warning);">
+        <a href="/admin" class="nav-item" style="color: #FF45B5;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           <span><?= e(__('nav_admin')) ?></span>
         </a>
@@ -79,18 +79,18 @@
 
     <div class="sidebar-footer">
       <div style="display: flex; align-items: center; gap: 10px; overflow: hidden;">
-        <div style="width: 32px; height: 32px; border-radius: var(--radius-full); background-color: var(--color-primary-light); color: var(--color-primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">
+        <div class="header-avatar" style="width: 34px; height: 34px; font-size: 0.8125rem;">
           <?= strtoupper(substr(current_user()['name'] ?? 'U', 0, 1)) ?>
         </div>
         <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-          <div style="font-size: 0.8125rem; font-weight: 600; color: var(--ink-primary); text-overflow: ellipsis; overflow: hidden;"><?= e(current_user()['name'] ?? 'User') ?></div>
-          <div style="font-size: 0.75rem; color: var(--ink-muted);"><?= e(current_user()['email'] ?? '') ?></div>
+          <div style="font-size: 0.8125rem; font-weight: 700; color: #FFFFFF; text-overflow: ellipsis; overflow: hidden;"><?= e(current_user()['name'] ?? 'User') ?></div>
+          <div style="font-size: 0.75rem; color: rgba(255,255,255,0.6);"><?= e(current_user()['email'] ?? '') ?></div>
         </div>
       </div>
 
       <form method="POST" action="/logout">
         <?= csrf_field() ?>
-        <button type="submit" class="btn btn-ghost btn-icon" title="<?= e(__('logout')) ?>">
+        <button type="submit" class="btn btn-ghost btn-icon" title="<?= e(__('logout')) ?>" style="color: #FFFFFF;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         </button>
       </form>
@@ -100,31 +100,39 @@
   <!-- Main Content Layout -->
   <div class="app-main">
     <header class="app-header">
-      <div style="font-size: 1.125rem; font-weight: 700; color: var(--ink-primary);">
-        <?= e($title ?? 'Dashboard') ?>
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <!-- Monogram Logo on Mobile / Small screens -->
+        <a href="/dashboard" class="brand-monogram" title="Dashboard">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 7.5A5.5 5.5 0 0 0 7 7.5c0 5 10 4 10 9a5.5 5.5 0 0 1-10 0"/>
+          </svg>
+        </a>
+        <div class="app-header-title">
+          <?= e($title ?? 'Dashboard') ?>
+        </div>
       </div>
 
-      <div style="display: flex; align-items: center; gap: 12px;">
+      <div class="header-actions">
         <!-- Language Switcher -->
         <form method="POST" action="/settings/locale" style="display: inline-block;">
           <?= csrf_field() ?>
           <?php if (\App\Core\I18n::getLocale() === 'en'): ?>
             <input type="hidden" name="locale" value="bn">
-            <button type="submit" class="btn btn-ghost" style="padding: 6px 10px; font-size: 0.8125rem; font-weight: 600;">বাংলা</button>
+            <button type="submit" class="btn btn-ghost" style="padding: 6px 12px; font-size: 0.8125rem; font-weight: 700; color: #FFFFFF; background: rgba(255,255,255,0.12); border-radius: var(--radius-full);">বাংলা</button>
           <?php else: ?>
             <input type="hidden" name="locale" value="en">
-            <button type="submit" class="btn btn-ghost" style="padding: 6px 10px; font-size: 0.8125rem; font-weight: 600;">EN</button>
+            <button type="submit" class="btn btn-ghost" style="padding: 6px 12px; font-size: 0.8125rem; font-weight: 700; color: #FFFFFF; background: rgba(255,255,255,0.12); border-radius: var(--radius-full);">EN</button>
           <?php endif; ?>
         </form>
 
         <!-- Theme Toggle -->
-        <button type="button" class="btn btn-ghost btn-icon" onclick="window.PFM.toggleTheme()" title="Toggle Dark/Light Mode">
+        <button type="button" class="btn btn-ghost btn-icon" onclick="window.PFM.toggleTheme()" title="Toggle Dark/Light Mode" style="color: #FFFFFF; background: rgba(255,255,255,0.12);">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
           </svg>
         </button>
 
-        <!-- Notification Bell Dropdown -->
+        <!-- Notification Bell Pill (4 🔔) -->
         <div class="header-notif-bell" x-data="{
           open: false,
           count: 0,
@@ -152,29 +160,30 @@
             }).catch(() => {});
           }
         }" x-init="fetchUnread(); setInterval(() => fetchUnread(), 20000)" @click.outside="open = false" style="position: relative;">
-          <button type="button" class="btn btn-ghost btn-icon" @click="open = !open; if(open) fetchUnread()" title="Notifications" style="position: relative;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          
+          <button type="button" class="header-notif-pill" @click="open = !open; if(open) fetchUnread()" title="Notifications">
+            <span x-text="count || 0">0</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
               <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
             </svg>
-            <span x-show="count > 0" x-text="count" style="position: absolute; top: 2px; right: 2px; background: var(--color-danger); color: #fff; font-size: 0.625rem; font-weight: 700; width: 16px; height: 16px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; border: 1.5px solid var(--surface-card);" x-cloak></span>
           </button>
 
           <!-- Dropdown Popover -->
-          <div x-show="open" x-transition style="position: absolute; right: 0; top: calc(100% + 8px); width: 320px; max-width: 90vw; background: var(--surface-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); z-index: 1000; overflow: hidden;" x-cloak>
-            <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid var(--border-color);">
+          <div x-show="open" x-transition style="position: absolute; right: 0; top: calc(100% + 10px); width: 320px; max-width: 90vw; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); z-index: 1000; overflow: hidden;" x-cloak>
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--border-color);">
               <span style="font-weight: 700; font-size: 0.875rem; color: var(--ink-primary);">Notifications</span>
-              <button type="button" class="btn btn-ghost" @click="markAll()" style="font-size: 0.75rem; padding: 4px 6px;" x-show="count > 0">Mark read</button>
+              <button type="button" class="btn btn-ghost" @click="markAll()" style="font-size: 0.75rem; padding: 4px 8px; color: var(--color-accent-pink);" x-show="count > 0">Mark read</button>
             </div>
             <div style="max-height: 320px; overflow-y: auto;">
               <template x-if="items.length === 0">
-                <div style="padding: 24px 16px; text-align: center; color: var(--ink-muted); font-size: 0.8125rem;">
+                <div style="padding: 28px 16px; text-align: center; color: var(--ink-muted); font-size: 0.8125rem;">
                   No new notifications
                 </div>
               </template>
               <template x-for="item in items" :key="item.id">
-                <a :href="item.link || '#'" style="display: block; padding: 10px 14px; border-bottom: 1px solid var(--border-color); text-decoration: none; color: inherit; transition: background 0.15s ease;" onmouseover="this.style.background='var(--surface-hover)'" onmouseout="this.style.background='transparent'">
-                  <div style="font-size: 0.8125rem; font-weight: 600; color: var(--ink-primary);" x-text="item.title"></div>
+                <a :href="item.link || '#'" style="display: block; padding: 12px 16px; border-bottom: 1px solid var(--border-color); text-decoration: none; color: inherit; transition: background 0.15s ease;" onmouseover="this.style.background='var(--bg-subtle)'" onmouseout="this.style.background='transparent'">
+                  <div style="font-size: 0.8125rem; font-weight: 700; color: var(--ink-primary);" x-text="item.title"></div>
                   <div style="font-size: 0.75rem; color: var(--ink-secondary); margin-top: 2px;" x-text="item.body"></div>
                   <div style="font-size: 0.6875rem; color: var(--ink-muted); margin-top: 4px;" x-text="item.created_at"></div>
                 </a>
@@ -183,10 +192,15 @@
           </div>
         </div>
 
+        <!-- User Avatar Circle -->
+        <a href="/settings" class="header-avatar" title="<?= e(current_user()['name'] ?? 'User Profile') ?>">
+          <?= strtoupper(substr(current_user()['name'] ?? 'U', 0, 1)) ?>
+        </a>
+
         <!-- Quick Add Desktop Button -->
-        <button type="button" class="btn btn-primary" id="btn-quick-add" onclick="window.dispatchEvent(new CustomEvent('open-quick-add', {detail: {type: 'expense'}}))" style="padding: 8px 16px; font-size: 0.875rem;">
+        <button type="button" class="btn btn-primary" id="btn-quick-add" onclick="window.dispatchEvent(new CustomEvent('open-quick-add', {detail: {type: 'expense'}}))" style="padding: 9px 18px; font-size: 0.875rem; font-weight: 700;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          <span><?= e(__('quick_add')) ?> (N)</span>
+          <span>Quick Add (N)</span>
         </button>
       </div>
     </header>

@@ -1,37 +1,56 @@
-/* Design Tokens for Personal Finance Manager */
+/* Design Tokens for Personal Finance Manager - Luxury Purple & Magenta Fintech Theme */
 :root {
-  /* Color Palette - Light Mode */
-  --bg-page: #F7F8FC;
+  /* Color Palette - Vibrant Luxury Purple & Magenta */
+  --bg-page: #230843;
+  --bg-gradient-top: #2B0A52;
+  --bg-gradient-mid: #58166C;
+  --bg-gradient-bottom: #942586;
+  --gradient-app-bg: linear-gradient(180deg, #240845 0%, #3B0E5D 20%, #681A78 50%, #8D2587 80%, #AC3097 100%);
+  --gradient-hero-card: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.08) 100%);
+  --gradient-pink: linear-gradient(135deg, #FF45B5 0%, #F43F5E 100%);
+  --gradient-pill-green: linear-gradient(135deg, rgba(18, 183, 106, 0.22) 0%, rgba(18, 183, 106, 0.12) 100%);
+
+  /* Surface Colors */
   --bg-surface: #FFFFFF;
   --bg-surface-elevated: #FFFFFF;
-  --bg-surface-hover: #F1F5F9;
-  --bg-subtle: #EDF2F7;
-  
-  --ink-primary: #0F172A;
+  --bg-surface-hover: #F8FAFC;
+  --bg-subtle: #F1F5F9;
+  --bg-glass: rgba(255, 255, 255, 0.14);
+  --bg-glass-hover: rgba(255, 255, 255, 0.22);
+  --border-glass: rgba(255, 255, 255, 0.24);
+
+  /* Typography Colors */
+  --ink-primary: #120626;
   --ink-secondary: #475569;
   --ink-muted: #64748B;
+  --ink-light: rgba(255, 255, 255, 0.85);
+  --ink-dim: rgba(255, 255, 255, 0.65);
   --ink-inverse: #FFFFFF;
 
-  --color-primary: #5B5BD6;
-  --color-primary-hover: #4B4BC0;
-  --color-primary-light: #EEF2FF;
-  
+  /* Accents */
+  --color-primary: #9333EA;
+  --color-primary-hover: #7E22CE;
+  --color-primary-light: #F3E8FF;
+  --color-accent-pink: #FF45B5;
+  --color-accent-rose: #F43F5E;
+  --color-dark-pill: #120626;
+
   --color-income: #12B76A;
   --color-income-light: #ECFDF3;
-  --color-expense: #F04438;
-  --color-expense-light: #FEF3F2;
-  --color-warning: #F79009;
-  --color-warning-light: #FFFAEB;
-  --color-info: #0BA5EC;
+  --color-expense: #F43F5E;
+  --color-expense-light: #FFF1F2;
+  --color-warning: #F59E0B;
+  --color-warning-light: #FEF3C7;
+  --color-info: #0EA5E9;
   --color-info-light: #F0F9FF;
 
   --border-color: #E2E8F0;
-  --border-focus: #5B5BD6;
-  
+  --border-focus: #FF45B5;
+
   /* Typography */
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-bangla: 'Hind Siliguri', 'Plus Jakarta Sans', system-ui, sans-serif;
-  
+
   /* Spacing Scale (8px Grid) */
   --space-1: 4px;
   --space-2: 8px;
@@ -45,46 +64,56 @@
 
   /* Border Radii */
   --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-2xl: 34px;
   --radius-full: 9999px;
 
   /* Elevation Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(16, 24, 40, 0.05);
-  --shadow-md: 0 4px 8px -2px rgba(16, 24, 40, 0.08), 0 2px 4px -2px rgba(16, 24, 40, 0.04);
-  --shadow-lg: 0 12px 16px -4px rgba(16, 24, 40, 0.08), 0 4px 6px -2px rgba(16, 24, 40, 0.03);
-  --shadow-sheet: 0 -8px 24px rgba(16, 24, 40, 0.12);
+  --shadow-sm: 0 2px 4px 0 rgba(18, 6, 38, 0.04);
+  --shadow-md: 0 8px 20px -4px rgba(18, 6, 38, 0.08), 0 4px 8px -2px rgba(18, 6, 38, 0.04);
+  --shadow-lg: 0 16px 32px -6px rgba(18, 6, 38, 0.12);
+  --shadow-glass: 0 12px 30px 0 rgba(28, 6, 52, 0.25);
+  --shadow-glow-pink: 0 8px 24px rgba(255, 69, 181, 0.35);
 
   /* Transitions */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Dark Mode Overrides */
+/* Dark Mode Overrides (Deep Amethyst Midnight) */
 [data-theme="dark"] {
-  --bg-page: #0B1020;
-  --bg-surface: #121A2F;
-  --bg-surface-elevated: #1A243D;
-  --bg-surface-hover: #222E4D;
-  --bg-subtle: #18223C;
+  --bg-page: #100320;
+  --bg-gradient-top: #15042A;
+  --bg-gradient-mid: #250645;
+  --bg-gradient-bottom: #3B0A64;
+  --gradient-app-bg: linear-gradient(180deg, #100320 0%, #1A0530 25%, #29084A 60%, #3D0A66 100%);
+  --gradient-hero-card: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
+
+  --bg-surface: #18072E;
+  --bg-surface-elevated: #220A40;
+  --bg-surface-hover: #2D0E54;
+  --bg-subtle: #1F083B;
+  --bg-glass: rgba(255, 255, 255, 0.08);
+  --bg-glass-hover: rgba(255, 255, 255, 0.14);
+  --border-glass: rgba(255, 255, 255, 0.12);
 
   --ink-primary: #F8FAFC;
   --ink-secondary: #CBD5E1;
-  --ink-muted: #94A3B8;
-  --ink-inverse: #0F172A;
+  --ink-muted: #A78BFA;
+  --ink-inverse: #120626;
 
-  --color-primary-light: rgba(91, 91, 214, 0.18);
-  --color-income-light: rgba(18, 183, 106, 0.15);
-  --color-expense-light: rgba(240, 68, 56, 0.15);
-  --color-warning-light: rgba(247, 144, 9, 0.15);
-  --color-info-light: rgba(11, 165, 236, 0.15);
+  --color-primary-light: rgba(147, 51, 234, 0.25);
+  --color-income-light: rgba(18, 183, 106, 0.2);
+  --color-expense-light: rgba(244, 63, 94, 0.2);
+  --color-dark-pill: #0A0216;
 
-  --border-color: #1E293B;
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 8px -2px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 12px 20px -4px rgba(0, 0, 0, 0.6);
-  --shadow-sheet: 0 -8px 30px rgba(0, 0, 0, 0.7);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 8px 20px -4px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 16px 32px -6px rgba(0, 0, 0, 0.7);
+  --shadow-glass: 0 12px 30px 0 rgba(0, 0, 0, 0.5);
 }
 
 /* Font Family Selection based on Locale */
