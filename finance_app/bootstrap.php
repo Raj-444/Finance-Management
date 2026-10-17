@@ -131,8 +131,28 @@ $router->get('/notifications/unread', [\App\Controllers\NotificationController::
 $router->post('/notifications/mark-all-read', [\App\Controllers\NotificationController::class, 'markAllRead'], ['installed', 'auth']);
 $router->post('/notifications/{id}/mark-read', [\App\Controllers\NotificationController::class, 'markRead'], ['installed', 'auth']);
 
-// Preferences Routes
+// Settings & Profile Routes
+$router->get('/settings', [\App\Controllers\SettingsController::class, 'index'], ['installed', 'auth']);
+$router->post('/settings/profile', [\App\Controllers\SettingsController::class, 'updateProfile'], ['installed', 'auth']);
+$router->post('/settings/password', [\App\Controllers\SettingsController::class, 'updatePassword'], ['installed', 'auth']);
+$router->get('/settings/export/csv', [\App\Controllers\SettingsController::class, 'exportCsv'], ['installed', 'auth']);
+$router->get('/settings/export/xlsx', [\App\Controllers\SettingsController::class, 'exportXlsx'], ['installed', 'auth']);
+$router->post('/settings/import/upload', [\App\Controllers\SettingsController::class, 'importUpload'], ['installed', 'auth']);
+$router->post('/settings/import/preview', [\App\Controllers\SettingsController::class, 'importPreview'], ['installed', 'auth', 'no_csrf']);
+$router->post('/settings/import/commit', [\App\Controllers\SettingsController::class, 'importCommit'], ['installed', 'auth']);
+$router->post('/settings/import/{id}/undo', [\App\Controllers\SettingsController::class, 'importUndo'], ['installed', 'auth']);
+$router->get('/settings/backup/download', [\App\Controllers\SettingsController::class, 'backupDownload'], ['installed', 'auth']);
+$router->post('/settings/backup/restore', [\App\Controllers\SettingsController::class, 'backupRestore'], ['installed', 'auth']);
+$router->post('/settings/smtp', [\App\Controllers\SettingsController::class, 'updateSmtp'], ['installed', 'auth']);
+$router->post('/settings/smtp/test', [\App\Controllers\SettingsController::class, 'testSmtp'], ['installed', 'auth', 'no_csrf']);
+$router->post('/settings/registration/toggle', [\App\Controllers\SettingsController::class, 'toggleRegistration'], ['installed', 'auth', 'no_csrf']);
 $router->post('/settings/locale', [\App\Controllers\SettingsController::class, 'setLocale'], ['installed']);
 $router->post('/settings/theme', [\App\Controllers\SettingsController::class, 'setTheme'], ['installed', 'no_csrf']);
+
+// Admin Panel Routes
+$router->get('/admin', [\App\Controllers\AdminController::class, 'index'], ['installed', 'auth']);
+$router->post('/admin/users/{id}/role', [\App\Controllers\AdminController::class, 'toggleRole'], ['installed', 'auth']);
+$router->post('/admin/users/{id}/active', [\App\Controllers\AdminController::class, 'toggleActive'], ['installed', 'auth']);
+$router->post('/admin/users/{id}/delete', [\App\Controllers\AdminController::class, 'deleteUser'], ['installed', 'auth']);
 
 return $router;

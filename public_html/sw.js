@@ -10,6 +10,7 @@ const ASSETS_TO_CACHE = [
   '/assets/css/app.css',
   '/assets/js/app.js',
   '/assets/js/alpine.min.js',
+  '/assets/js/chart.min.js',
   '/manifest.webmanifest'
 ];
 
