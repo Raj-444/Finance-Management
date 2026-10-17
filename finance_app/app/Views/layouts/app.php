@@ -59,6 +59,11 @@
         <span><?= e(__('nav_goals')) ?></span>
       </a>
 
+      <a href="/recurring" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'] ?? '', 'recurring') ? 'active' : '' ?>">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        <span>Recurring</span>
+      </a>
+
       <a href="/settings" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'] ?? '', 'settings') ? 'active' : '' ?>">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         <span><?= e(__('nav_settings')) ?></span>
@@ -118,6 +123,65 @@
             <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
           </svg>
         </button>
+
+        <!-- Notification Bell Dropdown -->
+        <div class="header-notif-bell" x-data="{
+          open: false,
+          count: 0,
+          items: [],
+          fetchUnread() {
+            fetch('/notifications/unread')
+              .then(res => res.json())
+              .then(data => {
+                if (data.ok) {
+                  this.count = data.count || 0;
+                  this.items = data.notifications || [];
+                }
+              }).catch(() => {});
+          },
+          markAll() {
+            const token = document.querySelector('meta[name=\'csrf-token\']')?.content;
+            fetch('/notifications/mark-all-read', {
+              method: 'POST',
+              headers: { 'X-CSRF-Token': token, 'Accept': 'application/json' }
+            }).then(res => res.json()).then(data => {
+              if (data.ok) {
+                this.count = 0;
+                this.items = [];
+              }
+            }).catch(() => {});
+          }
+        }" x-init="fetchUnread(); setInterval(() => fetchUnread(), 20000)" @click.outside="open = false" style="position: relative;">
+          <button type="button" class="btn btn-ghost btn-icon" @click="open = !open; if(open) fetchUnread()" title="Notifications" style="position: relative;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span x-show="count > 0" x-text="count" style="position: absolute; top: 2px; right: 2px; background: var(--color-danger); color: #fff; font-size: 0.625rem; font-weight: 700; width: 16px; height: 16px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; border: 1.5px solid var(--surface-card);" x-cloak></span>
+          </button>
+
+          <!-- Dropdown Popover -->
+          <div x-show="open" x-transition style="position: absolute; right: 0; top: calc(100% + 8px); width: 320px; max-width: 90vw; background: var(--surface-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); z-index: 1000; overflow: hidden;" x-cloak>
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid var(--border-color);">
+              <span style="font-weight: 700; font-size: 0.875rem; color: var(--ink-primary);">Notifications</span>
+              <button type="button" class="btn btn-ghost" @click="markAll()" style="font-size: 0.75rem; padding: 4px 6px;" x-show="count > 0">Mark read</button>
+            </div>
+            <div style="max-height: 320px; overflow-y: auto;">
+              <template x-if="items.length === 0">
+                <div style="padding: 24px 16px; text-align: center; color: var(--ink-muted); font-size: 0.8125rem;">
+                  No new notifications
+                </div>
+              </template>
+              <template x-for="item in items" :key="item.id">
+                <a :href="item.link || '#'" style="display: block; padding: 10px 14px; border-bottom: 1px solid var(--border-color); text-decoration: none; color: inherit; transition: background 0.15s ease;" onmouseover="this.style.background='var(--surface-hover)'" onmouseout="this.style.background='transparent'">
+                  <div style="font-size: 0.8125rem; font-weight: 600; color: var(--ink-primary);" x-text="item.title"></div>
+                  <div style="font-size: 0.75rem; color: var(--ink-secondary); margin-top: 2px;" x-text="item.body"></div>
+                  <div style="font-size: 0.6875rem; color: var(--ink-muted); margin-top: 4px;" x-text="item.created_at"></div>
+                </a>
+              </template>
+            </div>
+          </div>
+        </div>
 
         <!-- Quick Add Desktop Button -->
         <button type="button" class="btn btn-primary" id="btn-quick-add" onclick="window.dispatchEvent(new CustomEvent('open-quick-add', {detail: {type: 'expense'}}))" style="padding: 8px 16px; font-size: 0.875rem;">

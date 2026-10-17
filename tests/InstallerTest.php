@@ -31,6 +31,9 @@ class InstallerTest
     {
         echo "\n=== Running Web Installer & Auth Integration Test ===\n\n";
 
+        // Save existing lock file if present to restore after test
+        $existingLockContent = file_exists($this->lockFile) ? file_get_contents($this->lockFile) : null;
+
         // Clean any existing test lock or DB
         @unlink($this->lockFile);
         @unlink($this->sqliteDb);
@@ -201,6 +204,11 @@ class InstallerTest
         // Clean up test artifacts
         @unlink($this->lockFile);
         @unlink($this->sqliteDb);
+
+        // Restore original lock file if it was previously present
+        if ($existingLockContent !== null) {
+            file_put_contents($this->lockFile, $existingLockContent);
+        }
 
         echo "\nAll Installer & Auth integration tests passed!\n\n";
     }

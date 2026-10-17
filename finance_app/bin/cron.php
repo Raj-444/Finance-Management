@@ -41,17 +41,70 @@ $startTime = microtime(true);
 Logger::info("Cron runner started");
 
 try {
-    // Phase 1: Maintenance & Log rotation checks
     echo "[" . date('Y-m-d H:i:s') . "] Starting scheduled tasks...\n";
 
-    // 1. Rotate logs if app.log exceeds 5MB
+    // 1. Process Due Recurring Rules
+    $today = date('Y-m-d');
+    $dueRules = \App\Models\RecurringRule::getDueRules($today);
+    $processedRules = 0;
+
+    foreach ($dueRules as $rule) {
+        $userId = (int) $rule['user_id'];
+        $ruleId = (int) $rule['id'];
+
+        if ((int)$rule['auto_post'] === 1) {
+            try {
+                \App\Models\Transaction::create($userId, [
+                    'type' => $rule['type'],
+                    'account_id' => $rule['account_id'],
+                    'category_id' => $rule['category_id'],
+                    'amount' => $rule['amount'],
+                    'tx_date' => $rule['next_run'],
+                    'note' => (!empty($rule['note']) ? $rule['note'] . ' ' : '') . '(Recurring Auto-Post)',
+                    'tags' => 'recurring',
+                ]);
+            } catch (\Throwable $ex) {
+                Logger::error("Failed to auto-post recurring rule #{$ruleId}: " . $ex->getMessage());
+            }
+        }
+
+        // Advance next run date
+        \App\Models\RecurringRule::advanceNextRun(
+            $ruleId,
+            $rule['next_run'],
+            $rule['frequency'],
+            (int)($rule['interval_n'] ?? 1)
+        );
+        $processedRules++;
+    }
+
+    if ($processedRules > 0) {
+        echo "Processed {$processedRules} due recurring rules.\n";
+    }
+
+    // 2. Evaluate Budgets and trigger forecast/warning alerts
+    $users = \App\Core\Database::fetchAll("SELECT id FROM users");
+    $evalUsers = 0;
+    foreach ($users as $u) {
+        try {
+            \App\Services\BudgetForecastService::evaluateAllForUser((int)$u['id']);
+            $evalUsers++;
+        } catch (\Throwable $ex) {
+            Logger::error("Budget evaluation failed for user #{$u['id']}: " . $ex->getMessage());
+        }
+    }
+    if ($evalUsers > 0) {
+        echo "Evaluated budget alerts for {$evalUsers} users.\n";
+    }
+
+    // 3. Rotate logs if app.log exceeds 5MB
     $logFile = dirname(__DIR__) . '/storage/logs/app.log';
     if (file_exists($logFile) && filesize($logFile) > 5 * 1024 * 1024) {
         @rename($logFile, dirname(__DIR__) . '/storage/logs/app-' . date('Ymd-His') . '.log');
         echo "Rotated application log.\n";
     }
 
-    // 2. Clean old session files older than 7 days
+    // 4. Clean old session files older than 7 days
     $sessionDir = dirname(__DIR__) . '/storage/sessions';
     if (is_dir($sessionDir)) {
         $files = glob($sessionDir . '/sess_*');

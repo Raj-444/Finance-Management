@@ -97,6 +97,40 @@ $router->get('/categories', [\App\Controllers\CategoryController::class, 'index'
 $router->post('/categories', [\App\Controllers\CategoryController::class, 'store'], ['installed', 'auth']);
 $router->post('/categories/{id}/archive', [\App\Controllers\CategoryController::class, 'archive'], ['installed', 'auth']);
 
+// Budgets Routes
+$router->get('/budgets', [\App\Controllers\BudgetController::class, 'index'], ['installed', 'auth']);
+$router->post('/budgets', [\App\Controllers\BudgetController::class, 'store'], ['installed', 'auth']);
+$router->post('/budgets/{id}/delete', [\App\Controllers\BudgetController::class, 'delete'], ['installed', 'auth']);
+
+// Analytics Routes
+$router->get('/analytics', [\App\Controllers\AnalyticsController::class, 'index'], ['installed', 'auth']);
+$router->get('/analytics/data', [\App\Controllers\AnalyticsController::class, 'data'], ['installed', 'auth']);
+
+// Debts Routes
+$router->get('/debts', [\App\Controllers\DebtController::class, 'index'], ['installed', 'auth']);
+$router->post('/debts', [\App\Controllers\DebtController::class, 'store'], ['installed', 'auth']);
+$router->post('/debts/{id}/payments', [\App\Controllers\DebtController::class, 'addPayment'], ['installed', 'auth']);
+$router->post('/debts/{id}/toggle', [\App\Controllers\DebtController::class, 'toggleStatus'], ['installed', 'auth']);
+$router->post('/debts/{id}/delete', [\App\Controllers\DebtController::class, 'delete'], ['installed', 'auth']);
+
+// Goals Routes
+$router->get('/goals', [\App\Controllers\GoalController::class, 'index'], ['installed', 'auth']);
+$router->post('/goals', [\App\Controllers\GoalController::class, 'store'], ['installed', 'auth']);
+$router->post('/goals/{id}/contribute', [\App\Controllers\GoalController::class, 'addContribution'], ['installed', 'auth']);
+$router->post('/goals/{id}/toggle', [\App\Controllers\GoalController::class, 'toggleStatus'], ['installed', 'auth']);
+$router->post('/goals/{id}/delete', [\App\Controllers\GoalController::class, 'delete'], ['installed', 'auth']);
+
+// Recurring Rules Routes
+$router->get('/recurring', [\App\Controllers\RecurringController::class, 'index'], ['installed', 'auth']);
+$router->post('/recurring', [\App\Controllers\RecurringController::class, 'store'], ['installed', 'auth']);
+$router->post('/recurring/{id}/toggle', [\App\Controllers\RecurringController::class, 'toggleActive'], ['installed', 'auth']);
+$router->post('/recurring/{id}/delete', [\App\Controllers\RecurringController::class, 'delete'], ['installed', 'auth']);
+
+// Notifications Routes
+$router->get('/notifications/unread', [\App\Controllers\NotificationController::class, 'unread'], ['installed', 'auth']);
+$router->post('/notifications/mark-all-read', [\App\Controllers\NotificationController::class, 'markAllRead'], ['installed', 'auth']);
+$router->post('/notifications/{id}/mark-read', [\App\Controllers\NotificationController::class, 'markRead'], ['installed', 'auth']);
+
 // Preferences Routes
 $router->post('/settings/locale', [\App\Controllers\SettingsController::class, 'setLocale'], ['installed']);
 $router->post('/settings/theme', [\App\Controllers\SettingsController::class, 'setTheme'], ['installed', 'no_csrf']);

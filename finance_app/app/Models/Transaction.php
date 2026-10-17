@@ -46,7 +46,18 @@ class Transaction
             $amount, $txDate, $note, $tags, $dedupeHash, $now, $now
         ]);
 
-        return (int) Database::lastInsertId();
+        $insertedId = (int) Database::lastInsertId();
+
+        if ($type === 'expense') {
+            try {
+                \App\Services\BudgetForecastService::evaluateAllForUser($userId);
+            } catch (\Throwable $e) {
+                // Silently log; never fail transaction insert on notification failure
+                \App\Core\Logger::error("Budget evaluation failed on tx create: " . $e->getMessage());
+            }
+        }
+
+        return $insertedId;
     }
 
     public static function findById(int $id, int $userId): ?array
