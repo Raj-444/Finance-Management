@@ -146,6 +146,10 @@ $router->post('/settings/backup/restore', [\App\Controllers\SettingsController::
 $router->post('/settings/smtp', [\App\Controllers\SettingsController::class, 'updateSmtp'], ['installed', 'auth']);
 $router->post('/settings/smtp/test', [\App\Controllers\SettingsController::class, 'testSmtp'], ['installed', 'auth', 'no_csrf']);
 $router->post('/settings/registration/toggle', [\App\Controllers\SettingsController::class, 'toggleRegistration'], ['installed', 'auth', 'no_csrf']);
+$router->get('/settings/import/template', [\App\Controllers\SettingsController::class, 'downloadTemplate'], ['installed', 'auth']);
+$router->post('/settings/account/delete', [\App\Controllers\SettingsController::class, 'deleteAccount'], ['installed', 'auth']);
+$router->post('/settings/sessions/revoke-others', [\App\Controllers\SettingsController::class, 'revokeOtherSessions'], ['installed', 'auth']);
+$router->post('/settings/summary/test', [\App\Controllers\SettingsController::class, 'testMonthlySummary'], ['installed', 'auth', 'no_csrf']);
 $router->post('/settings/locale', [\App\Controllers\SettingsController::class, 'setLocale'], ['installed']);
 $router->post('/settings/theme', [\App\Controllers\SettingsController::class, 'setTheme'], ['installed', 'no_csrf']);
 

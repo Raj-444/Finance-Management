@@ -42,6 +42,9 @@ class Phase4Test
         $this->testImportPreviewCommitAndRollback();
         $this->testFullBackupAndRestore();
         $this->testPasswordAndProfileSettings();
+        $this->testMonthlySummaryComputation();
+        $this->testAccountDeletionAndCascadingCleanup();
+        $this->testSessionRevocation();
 
         echo "\n----------------------------------------\n";
         echo "Results: {$this->passed} Passed, {$this->failed} Failed\n";
@@ -234,6 +237,117 @@ class Phase4Test
         $updatedUser = User::findById($userId);
         $this->assert(password_verify('NewSuperSecretPass999!', $updatedUser['password_hash']), "New password verifies with Argon2/Bcrypt");
         $this->assert(!password_verify('OldPassword123!', $updatedUser['password_hash']), "Old password no longer valid");
+    }
+
+    private function testMonthlySummaryComputation(): void
+    {
+        echo "--- Testing Monthly Financial Summary Calculation ---\n";
+
+        $userId = User::create([
+            'email' => 'phase4_summary_' . time() . '@test.com',
+            'password' => 'secret123',
+            'name' => 'Monthly Summary Tester',
+        ]);
+
+        $accId = Account::create($userId, ['name' => 'Bank Account', 'type' => 'bank', 'opening_balance' => 200000]);
+        $catFood = Category::create($userId, ['name' => 'Dining Out', 'type' => 'expense', 'color' => '#E02424']);
+        $catTravel = Category::create($userId, ['name' => 'Transport', 'type' => 'expense', 'color' => '#3B82F6']);
+
+        // Insert transactions in September 2026
+        Transaction::create($userId, [
+            'type' => 'income',
+            'account_id' => $accId,
+            'amount' => 8000000, // 80,000 BDT
+            'tx_date' => '2026-09-05',
+            'note' => 'September Salary',
+        ]);
+
+        Transaction::create($userId, [
+            'type' => 'expense',
+            'account_id' => $accId,
+            'category_id' => $catFood,
+            'amount' => 1500000, // 15,000 BDT
+            'tx_date' => '2026-09-12',
+            'note' => 'Weekend Dinners',
+        ]);
+
+        Transaction::create($userId, [
+            'type' => 'expense',
+            'account_id' => $accId,
+            'category_id' => $catTravel,
+            'amount' => 500000, // 5,000 BDT
+            'tx_date' => '2026-09-20',
+            'note' => 'Commute',
+        ]);
+
+        $metrics = \App\Services\MonthlySummaryService::computeMetrics($userId, '2026-09');
+
+        $this->assert($metrics['total_income'] === 8000000, "Calculated total income 80,000 BDT");
+        $this->assert($metrics['total_expense'] === 2000000, "Calculated total expense 20,000 BDT");
+        $this->assert($metrics['net_savings'] === 6000000, "Calculated net savings 60,000 BDT");
+        $this->assert($metrics['savings_rate'] === 75.0, "Calculated savings rate 75.0%");
+        $this->assert(count($metrics['top_categories']) === 2, "Found 2 spending categories");
+        $this->assert($metrics['top_categories'][0]['name'] === 'Dining Out', "Top spending category is Dining Out");
+
+        $html = \App\Services\MonthlySummaryService::buildHtml($metrics);
+        $this->assert(str_contains($html, '80,000.00'), "Email contains formatted income figure");
+        $this->assert(str_contains($html, 'Dining Out'), "Email contains top category label");
+    }
+
+    private function testAccountDeletionAndCascadingCleanup(): void
+    {
+        echo "--- Testing User Account Deletion & Cascading Cleanup ---\n";
+
+        $userId = User::create([
+            'email' => 'phase4_delete_' . time() . '@test.com',
+            'password' => 'DeletePass123!',
+            'name' => 'To Be Deleted',
+        ]);
+
+        $accId = Account::create($userId, ['name' => 'Temp Account', 'type' => 'cash', 'opening_balance' => 50000]);
+        $catId = Category::create($userId, ['name' => 'Temp Category', 'type' => 'expense']);
+        
+        Transaction::create($userId, [
+            'type' => 'expense',
+            'account_id' => $accId,
+            'category_id' => $catId,
+            'amount' => 10000,
+            'tx_date' => '2026-10-15',
+            'note' => 'Temp Transaction',
+        ]);
+
+        SavingsGoal::create($userId, [
+            'name' => 'Temp Goal',
+            'target_amount' => 500000,
+        ]);
+
+        $this->assert(User::findById($userId) !== null, "User initially exists in database");
+
+        // Execute deletion
+        $deleted = User::delete($userId);
+        $this->assert($deleted === true, "User::delete returned true");
+        $this->assert(User::findById($userId) === null, "User record is gone from users table");
+
+        // Verify cascading deletion of ledger data
+        $remainingAccounts = Account::getAllForUser($userId);
+        $this->assert(count($remainingAccounts) === 0, "User's accounts cascade deleted");
+
+        $remainingTransactions = Database::fetchAll("SELECT * FROM transactions WHERE user_id = ?", [$userId]);
+        $this->assert(count($remainingTransactions) === 0, "User's transactions cascade deleted");
+
+        $remainingGoals = Database::fetchAll("SELECT * FROM savings_goals WHERE user_id = ?", [$userId]);
+        $this->assert(count($remainingGoals) === 0, "User's savings goals cascade deleted");
+    }
+
+    private function testSessionRevocation(): void
+    {
+        echo "--- Testing Session Revocation Helper ---\n";
+
+        $currentSessionId = \App\Core\Session::id();
+        $this->assert(is_string($currentSessionId), "Current session ID is string");
+
+        $revoked = \App\Core\Session::revokeOtherSessions();
+        $this->assert(is_int($revoked), "Revoke other sessions returned integer count of removed files");
     }
 }
 

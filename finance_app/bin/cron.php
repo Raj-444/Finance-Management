@@ -97,7 +97,34 @@ try {
         echo "Evaluated budget alerts for {$evalUsers} users.\n";
     }
 
-    // 3. Rotate logs if app.log exceeds 5MB
+    // 3. Process Monthly Summary Emails on the 1st of each month
+    if ((int)date('j') === 1) {
+        $lastMonthKey = (int)date('Ym', (int)strtotime('first day of last month'));
+        $optedUsers = \App\Core\Database::fetchAll("SELECT id, email FROM users WHERE email_alerts = 1 AND is_active = 1");
+        $sentSummaries = 0;
+        foreach ($optedUsers as $ou) {
+            $uId = (int)$ou['id'];
+            $alreadySent = \App\Core\Database::fetch(
+                "SELECT id FROM activity_log WHERE user_id = ? AND action = 'monthly_summary_sent' AND entity_id = ? LIMIT 1",
+                [$uId, $lastMonthKey]
+            );
+            if (!$alreadySent) {
+                try {
+                    $res = \App\Services\MonthlySummaryService::sendSummaryForUser($uId);
+                    if ($res['ok']) {
+                        $sentSummaries++;
+                    }
+                } catch (\Throwable $mex) {
+                    Logger::error("Monthly summary failed for user #{$uId}: " . $mex->getMessage());
+                }
+            }
+        }
+        if ($sentSummaries > 0) {
+            echo "Dispatched {$sentSummaries} monthly financial summaries.\n";
+        }
+    }
+
+    // 4. Rotate logs if app.log exceeds 5MB
     $logFile = dirname(__DIR__) . '/storage/logs/app.log';
     if (file_exists($logFile) && filesize($logFile) > 5 * 1024 * 1024) {
         @rename($logFile, dirname(__DIR__) . '/storage/logs/app-' . date('Ymd-His') . '.log');

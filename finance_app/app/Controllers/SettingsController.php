@@ -346,4 +346,54 @@ class SettingsController
 
         return Response::json(['ok' => true, 'theme' => $theme]);
     }
+
+    public function downloadTemplate(Request $request): Response
+    {
+        $format = $request->query('format', 'csv') === 'xlsx' ? 'xlsx' : 'csv';
+        ExcelService::downloadTemplate($format);
+        return Response::raw('');
+    }
+
+    public function deleteAccount(Request $request): Response
+    {
+        $userId = (int) Auth::id();
+        $user = User::findById($userId);
+        $password = (string)$request->input('password', '');
+
+        if (!password_verify($password, $user['password_hash'])) {
+            Session::setFlash('error', 'Incorrect password. Account deletion was not processed.');
+            return Response::redirect(url('/settings?tab=security'));
+        }
+
+        User::delete($userId);
+        Auth::logout();
+        Session::destroy();
+        Session::start();
+        Session::setFlash('success', 'Your account and all associated financial records have been permanently deleted.');
+
+        return Response::redirect(url('/register'));
+    }
+
+    public function revokeOtherSessions(Request $request): Response
+    {
+        $revoked = Session::revokeOtherSessions();
+        Session::regenerate();
+        Session::setFlash('success', "Revoked other active session(s). Your current session remains secure.");
+        return Response::redirect(url('/settings?tab=security'));
+    }
+
+    public function testMonthlySummary(Request $request): Response
+    {
+        $userId = (int) Auth::id();
+        try {
+            $result = \App\Services\MonthlySummaryService::sendSummaryForUser($userId);
+            if ($result['ok']) {
+                return Response::json(['ok' => true, 'message' => 'Monthly summary statement dispatched to ' . $result['metrics']['user']['email']]);
+            } else {
+                return Response::json(['ok' => false, 'error' => $result['error'] ?? 'Failed to send monthly statement. Check server mail logs.']);
+            }
+        } catch (\Throwable $e) {
+            return Response::json(['ok' => false, 'error' => $e->getMessage()]);
+        }
+    }
 }

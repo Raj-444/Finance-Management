@@ -149,6 +149,47 @@ $wizardMode = ($tab === 'data' && !empty($_GET['wizard']) && $pending);
         <button type="submit" class="btn btn-primary">Save Preferences</button>
       </form>
     </div>
+
+    <!-- Monthly Summary Email Card -->
+    <div class="card" style="max-width: 650px; padding: 24px; margin-top: 24px;" x-data="{ sending: false, statusMsg: '', isError: false }">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 10px;">
+        <div>
+          <h3 style="font-size: 1.0625rem; font-weight: 700; color: var(--ink-primary); margin: 0 0 4px 0;">Monthly Financial Statement</h3>
+          <p style="font-size: 0.8125rem; color: var(--ink-muted); margin: 0;">Automatically compiled on the 1st of every month and dispatched to your email.</p>
+        </div>
+        <button 
+          type="button" 
+          class="btn btn-ghost" 
+          style="border: 1px solid var(--border-color); white-space: nowrap;"
+          :disabled="sending"
+          @click="
+            sending = true;
+            statusMsg = '';
+            fetch('/settings/summary/test', { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+              .then(r => r.json())
+              .then(data => {
+                sending = false;
+                if (data.ok) {
+                  statusMsg = data.message || 'Monthly summary dispatched successfully!';
+                  isError = false;
+                } else {
+                  statusMsg = data.error || 'Failed to dispatch summary email.';
+                  isError = true;
+                }
+              })
+              .catch(() => {
+                sending = false;
+                statusMsg = 'Connection error.';
+                isError = true;
+              });
+          "
+        >
+          <span x-show="!sending">Send Test Statement</span>
+          <span x-show="sending">Dispatching...</span>
+        </button>
+      </div>
+      <div x-show="statusMsg" x-text="statusMsg" :style="isError ? 'color: var(--color-danger); font-size: 0.8125rem; font-weight: 600;' : 'color: var(--color-success); font-size: 0.8125rem; font-weight: 600;'"></div>
+    </div>
   </div>
 
   <!-- TAB 2: Security & Password -->
@@ -176,6 +217,52 @@ $wizardMode = ($tab === 'data' && !empty($_GET['wizard']) && $pending);
         </div>
 
         <button type="submit" class="btn btn-primary">Update Password</button>
+      </form>
+    </div>
+
+    <!-- Active Session & Device -->
+    <div class="card" style="max-width: 500px; padding: 24px; margin-top: 24px;">
+      <h3 style="font-size: 1.0625rem; font-weight: 700; color: var(--ink-primary); margin: 0 0 12px 0;">Active Session & Device</h3>
+      <div style="background: var(--bg-surface-alt, #F8FAFC); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px; font-size: 0.8125rem;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+          <span style="color: var(--ink-muted);">Current IP Address:</span>
+          <span style="font-family: monospace; font-weight: 600; color: var(--ink-primary);"><?= e($_SERVER['REMOTE_ADDR'] ?? '127.0.0.1') ?></span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+          <span style="color: var(--ink-muted);">Session Identifier:</span>
+          <span style="font-family: monospace; color: var(--ink-muted);">••••••••<?= substr(\App\Core\Session::id(), -6) ?></span>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: var(--ink-muted);">Device Client:</span>
+          <span style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink-primary);" title="<?= e($_SERVER['HTTP_USER_AGENT'] ?? 'Web Client') ?>">
+            <?= e(substr($_SERVER['HTTP_USER_AGENT'] ?? 'Web Client', 0, 36)) ?>...
+          </span>
+        </div>
+      </div>
+      <form method="POST" action="/settings/sessions/revoke-others">
+        <?= csrf_field() ?>
+        <button type="submit" class="btn btn-ghost" style="border: 1px solid var(--border-color); width: 100%;">
+          Log Out All Other Devices
+        </button>
+      </form>
+    </div>
+
+    <!-- Danger Zone: Delete Account -->
+    <div class="card" style="max-width: 500px; padding: 24px; margin-top: 24px; border: 1px solid rgba(240, 68, 56, 0.4); background: rgba(240, 68, 56, 0.02);">
+      <h3 style="font-size: 1.0625rem; font-weight: 700; color: var(--color-danger); margin: 0 0 8px 0;">Danger Zone: Delete Account</h3>
+      <p style="font-size: 0.8125rem; color: var(--ink-muted); margin-bottom: 16px; line-height: 1.5;">
+        Permanently remove your account and all associated financial records (accounts, transactions, debts, savings goals, and budgets). This action cannot be reversed.
+      </p>
+
+      <form method="POST" action="/settings/account/delete" onsubmit="return confirm('WARNING: Are you absolutely certain you want to permanently delete your account and all financial data? This CANNOT be undone.');">
+        <?= csrf_field() ?>
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label class="form-label" for="delete_confirm_password" style="color: var(--color-danger);">Enter password to confirm deletion</label>
+          <input type="password" name="password" id="delete_confirm_password" class="form-input" placeholder="Your current account password" required>
+        </div>
+        <button type="submit" class="btn" style="background: var(--color-danger); color: #fff; width: 100%;">
+          Permanently Delete My Account
+        </button>
       </form>
     </div>
   </div>
@@ -238,6 +325,15 @@ $wizardMode = ($tab === 'data' && !empty($_GET['wizard']) && $pending);
             <button type="submit" class="btn btn-primary" style="white-space: nowrap;">Upload & Preview</button>
           </div>
         </form>
+
+        <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border-color); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 0.8125rem;">
+          <span style="color: var(--ink-muted);">Need a pre-formatted format?</span>
+          <div style="display: flex; gap: 10px;">
+            <a href="/settings/import/template?format=csv" style="color: var(--color-primary); font-weight: 600; text-decoration: none;">Download .CSV Template</a>
+            <span style="color: var(--border-color);">|</span>
+            <a href="/settings/import/template?format=xlsx" style="color: var(--color-primary); font-weight: 600; text-decoration: none;">Download .XLSX Template</a>
+          </div>
+        </div>
       </div>
     </div>
 

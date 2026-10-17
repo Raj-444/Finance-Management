@@ -130,4 +130,30 @@ class Session
         unset($_SESSION['_flash']);
         return $flashes;
     }
+
+    public static function id(): string
+    {
+        self::start();
+        return (string) session_id();
+    }
+
+    public static function revokeOtherSessions(): int
+    {
+        self::start();
+        $currentId = session_id();
+        $sessionPath = dirname(__DIR__, 2) . '/storage/sessions';
+        $revoked = 0;
+        if (is_dir($sessionPath)) {
+            $files = glob($sessionPath . '/sess_*');
+            if ($files) {
+                foreach ($files as $file) {
+                    if (is_file($file) && basename($file) !== 'sess_' . $currentId) {
+                        @unlink($file);
+                        $revoked++;
+                    }
+                }
+            }
+        }
+        return $revoked;
+    }
 }

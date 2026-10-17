@@ -25,6 +25,62 @@ class ExcelService
     }
 
     /**
+     * Download a ready-to-fill sample import template
+     */
+    public static function downloadTemplate(string $format = 'csv'): void
+    {
+        $headers = ['Date', 'Type', 'Amount', 'Category', 'Account', 'Note', 'Person', 'Tags'];
+        $sampleRows = [
+            ['2026-10-15', 'expense', '1250.00', 'Food & Dining', 'Cash', 'Family dinner at restaurant', '', 'dining'],
+            ['2026-10-16', 'income', '50000.00', 'Salary', 'Bank', 'Monthly salary deposit', '', 'work'],
+            ['2026-10-17', 'expense', '350.00', 'Transportation', 'bKash', 'Rickshaw and bus fare', '', 'commute'],
+            ['2026-10-18', 'expense', '4500.00', 'Utilities', 'Nagad', 'Electricity and internet bill', '', 'bills'],
+        ];
+
+        if ($format === 'csv') {
+            header('Content-Type: text/csv; charset=UTF-8');
+            header('Content-Disposition: attachment; filename="transactions_import_template.csv"');
+            header('Pragma: no-cache');
+            header('Expires: 0');
+
+            $out = fopen('php://output', 'w');
+            fwrite($out, "\xEF\xBB\xBF");
+            fputcsv($out, $headers);
+            foreach ($sampleRows as $row) {
+                fputcsv($out, $row);
+            }
+            fclose($out);
+            exit;
+        }
+
+        // OpenSpout XLSX Template
+        $autoloadSpout = dirname(__DIR__, 2) . '/vendor/openspout/src/Common/Autoloader/autoload.php';
+        if (file_exists($autoloadSpout)) {
+            require_once $autoloadSpout;
+        }
+
+        if (class_exists(\OpenSpout\Writer\XLSX\Writer::class)) {
+            $filename = 'transactions_import_template.xlsx';
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+            header('Pragma: no-cache');
+            header('Expires: 0');
+
+            $writer = new \OpenSpout\Writer\XLSX\Writer();
+            $writer->openToFile('php://output');
+
+            $writer->addRow(\OpenSpout\Common\Entity\Row::fromValues($headers));
+            foreach ($sampleRows as $row) {
+                $writer->addRow(\OpenSpout\Common\Entity\Row::fromValues($row));
+            }
+            $writer->close();
+            exit;
+        }
+
+        self::downloadTemplate('csv');
+    }
+
+    /**
      * Export transactions to CSV
      */
     public static function exportCsv(int $userId, array $filters = []): void

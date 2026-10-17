@@ -73,4 +73,9 @@ class User
         $row = Database::fetch("SELECT COUNT(*) as count FROM users");
         return (int) ($row['count'] ?? 0);
     }
+
+    public static function delete(int $userId): bool
+    {
+        return Database::execute("DELETE FROM users WHERE id = ?", [$userId]) > 0;
+    }
 }
