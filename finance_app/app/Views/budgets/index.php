@@ -2,12 +2,12 @@
   <!-- Page Header -->
   <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
     <div>
-      <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--ink-primary); margin: 0 0 4px 0;">
+      <h1 class="page-title" style="margin: 0 0 4px 0;">
         Smart Budgets & Forecast
       </h1>
-      <p style="font-size: 0.875rem; color: var(--ink-muted); margin: 0;">
-        Active Period: <span style="font-weight: 600; color: var(--ink-primary);"><?= e($periodStart) ?> &mdash; <?= e($periodEnd) ?></span>
-        &bull; Day <span style="font-weight: 600; color: var(--color-primary);"><?= e($elapsedDays) ?></span> of <?= e($daysInPeriod) ?> (<?= round(($elapsedDays / max(1, $daysInPeriod)) * 100) ?>% elapsed)
+      <p class="page-subtitle" style="margin: 0;">
+        Active Period: <span style="font-weight: 700; color: #FFFFFF;"><?= e($periodStart) ?> &mdash; <?= e($periodEnd) ?></span>
+        &bull; Day <span style="font-weight: 700; color: #FF45B5;"><?= e($elapsedDays) ?></span> of <?= e($daysInPeriod) ?> (<?= round(($elapsedDays / max(1, $daysInPeriod)) * 100) ?>% elapsed)
       </p>
     </div>
 

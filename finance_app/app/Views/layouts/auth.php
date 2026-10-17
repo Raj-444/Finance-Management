@@ -19,15 +19,15 @@
       <?= csrf_field() ?>
       <?php if (\App\Core\I18n::getLocale() === 'en'): ?>
         <input type="hidden" name="locale" value="bn">
-        <button type="submit" class="btn btn-ghost" style="padding: 6px 12px; font-size: 0.875rem;">বাংলা</button>
+        <button type="submit" class="btn btn-ghost" style="padding: 6px 14px; font-size: 0.8125rem; font-weight: 700; color: #FFFFFF; background: rgba(255,255,255,0.14); border-radius: var(--radius-full);">বাংলা</button>
       <?php else: ?>
         <input type="hidden" name="locale" value="en">
-        <button type="submit" class="btn btn-ghost" style="padding: 6px 12px; font-size: 0.875rem;">English</button>
+        <button type="submit" class="btn btn-ghost" style="padding: 6px 14px; font-size: 0.8125rem; font-weight: 700; color: #FFFFFF; background: rgba(255,255,255,0.14); border-radius: var(--radius-full);">English</button>
       <?php endif; ?>
     </form>
 
     <!-- Theme Toggle -->
-    <button type="button" class="btn btn-ghost btn-icon" onclick="window.PFM.toggleTheme()" title="Toggle Dark/Light Mode">
+    <button type="button" class="btn btn-ghost btn-icon" onclick="window.PFM.toggleTheme()" title="Toggle Dark/Light Mode" style="color: #FFFFFF; background: rgba(255,255,255,0.14);">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
       </svg>

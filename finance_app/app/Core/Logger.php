@@ -34,6 +34,11 @@ class Logger
         @file_put_contents($logFile, $line, FILE_APPEND | LOCK_EX);
     }
 
+    public static function debug(string $message, array $context = []): void
+    {
+        self::log(self::DEBUG, $message, $context);
+    }
+
     public static function info(string $message, array $context = []): void
     {
         self::log(self::INFO, $message, $context);

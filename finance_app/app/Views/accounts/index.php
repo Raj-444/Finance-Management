@@ -3,8 +3,8 @@
   <!-- Header -->
   <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
     <div>
-      <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--ink-primary); margin-bottom: 2px;">Accounts & Wallets</h2>
-      <p style="font-size: 0.875rem; color: var(--ink-muted);">Manage your cash, mobile wallets (bKash, Nagad), bank accounts, and cards.</p>
+      <h2 class="page-title">Accounts & Wallets</h2>
+      <p class="page-subtitle">Manage your cash, mobile wallets (bKash, Nagad), bank accounts, and cards.</p>
     </div>
   </div>
 

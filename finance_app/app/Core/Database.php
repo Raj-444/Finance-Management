@@ -18,6 +18,11 @@ class Database
         self::$instance = null; // Reset connection if config changes
     }
 
+    public static function getConnection(): PDO
+    {
+        return self::getInstance();
+    }
+
     public static function getInstance(): PDO
     {
         if (self::$instance !== null) {

@@ -3,8 +3,8 @@
   <!-- Header & Actions -->
   <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
     <div>
-      <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--ink-primary); margin-bottom: 2px;">Transactions</h2>
-      <p style="font-size: 0.875rem; color: var(--ink-muted);">
+      <h2 class="page-title">Transactions</h2>
+      <p class="page-subtitle">
         Total <?= $pagination['total'] ?> transactions found
       </p>
     </div>

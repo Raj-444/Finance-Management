@@ -32,6 +32,13 @@ if (!function_exists('money')) {
     }
 }
 
+if (!function_exists('format_money')) {
+    function format_money(int|float $paisa, string $currency = 'BDT'): string
+    {
+        return money($paisa, $currency);
+    }
+}
+
 if (!function_exists('csrf_token')) {
     function csrf_token(): string
     {
