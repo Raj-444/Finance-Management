@@ -1,0 +1,41 @@
+<?php return array(
+    'root' => array(
+        'name' => 'raj/personal-finance-manager',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '4ce30e80ef2bf807aec60ae3a1e062a48129c808',
+        'type' => 'project',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'dev' => true,
+    ),
+    'versions' => array(
+        'openspout/openspout' => array(
+            'pretty_version' => 'v4.28.5',
+            'version' => '4.28.5.0',
+            'reference' => 'ab05a09fe6fce57c90338f83280648a9786ce36b',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../openspout/openspout',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'phpmailer/phpmailer' => array(
+            'pretty_version' => 'v6.12.0',
+            'version' => '6.12.0.0',
+            'reference' => 'd1ac35d784bf9f5e61b424901d5a014967f15b12',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpmailer/phpmailer',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'raj/personal-finance-manager' => array(
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '4ce30e80ef2bf807aec60ae3a1e062a48129c808',
+            'type' => 'project',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+    ),
+);

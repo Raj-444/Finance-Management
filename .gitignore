@@ -1,0 +1,27 @@
+# Configuration created by Web Installer
+finance_app/config/config.php
+
+# Installation lock
+finance_app/storage/installed.lock
+finance_app/storage/cron.lock
+
+# Storage data and logs (keep folder structure)
+finance_app/storage/logs/*
+!finance_app/storage/logs/.gitkeep
+finance_app/storage/sessions/*
+!finance_app/storage/sessions/.gitkeep
+finance_app/storage/cache/*
+!finance_app/storage/cache/.gitkeep
+finance_app/storage/backups/*
+!finance_app/storage/backups/.gitkeep
+finance_app/storage/tmp/*
+!finance_app/storage/tmp/.gitkeep
+
+# Local SQLite databases
+finance_app/storage/*.sqlite
+
+# OS and Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
