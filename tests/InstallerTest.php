@@ -108,6 +108,32 @@ class InstallerTest
               is_archived INTEGER NOT NULL DEFAULT 0,
               sort_order INTEGER NOT NULL DEFAULT 0
             );
+            CREATE TABLE transactions (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              user_id INTEGER NOT NULL,
+              type TEXT NOT NULL,
+              account_id INTEGER NOT NULL,
+              to_account_id INTEGER NULL,
+              category_id INTEGER NULL,
+              person_id INTEGER NULL,
+              amount INTEGER NOT NULL,
+              tx_date DATE NOT NULL,
+              note TEXT NULL,
+              tags TEXT NULL,
+              recurring_id INTEGER NULL,
+              import_batch_id INTEGER NULL,
+              dedupe_hash TEXT NULL,
+              created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              deleted_at DATETIME NULL
+            );
+            CREATE TABLE people (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              user_id INTEGER NOT NULL,
+              name TEXT NOT NULL,
+              phone TEXT NULL,
+              note TEXT NULL
+            );
             CREATE TABLE login_attempts (
               id INTEGER PRIMARY KEY AUTOINCREMENT,
               email TEXT NOT NULL,

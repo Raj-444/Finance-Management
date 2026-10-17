@@ -79,6 +79,23 @@ $router->post('/reset-password', [\App\Controllers\AuthController::class, 'reset
 // App Core Routes
 $router->get('/', fn() => \App\Core\Response::redirect(url('/dashboard')), ['installed']);
 $router->get('/dashboard', [\App\Controllers\DashboardController::class, 'index'], ['installed', 'auth']);
+$router->post('/dashboard/focus-mode', [\App\Controllers\DashboardController::class, 'toggleFocusMode'], ['installed', 'auth', 'no_csrf']);
+
+// Transactions Routes
+$router->get('/transactions', [\App\Controllers\TransactionController::class, 'index'], ['installed', 'auth']);
+$router->post('/transactions', [\App\Controllers\TransactionController::class, 'store'], ['installed', 'auth']);
+$router->post('/transactions/{id}/delete', [\App\Controllers\TransactionController::class, 'delete'], ['installed', 'auth']);
+$router->post('/transactions/{id}/restore', [\App\Controllers\TransactionController::class, 'restore'], ['installed', 'auth']);
+
+// Accounts Routes
+$router->get('/accounts', [\App\Controllers\AccountController::class, 'index'], ['installed', 'auth']);
+$router->post('/accounts', [\App\Controllers\AccountController::class, 'store'], ['installed', 'auth']);
+$router->post('/accounts/{id}/archive', [\App\Controllers\AccountController::class, 'archive'], ['installed', 'auth']);
+
+// Categories Routes
+$router->get('/categories', [\App\Controllers\CategoryController::class, 'index'], ['installed', 'auth']);
+$router->post('/categories', [\App\Controllers\CategoryController::class, 'store'], ['installed', 'auth']);
+$router->post('/categories/{id}/archive', [\App\Controllers\CategoryController::class, 'archive'], ['installed', 'auth']);
 
 // Preferences Routes
 $router->post('/settings/locale', [\App\Controllers\SettingsController::class, 'setLocale'], ['installed']);
